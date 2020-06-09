@@ -1,26 +1,20 @@
-import requests
+import os
 
-API_KEY = 'trnsl.1.1.20161025T233221Z.47834a66fd7895d0.a95fd4bfde5c1794fa433453956bd261eae80152'
-URL = 'https://translate.yandex.net/api/v1.5/tr.json/translate'
+from flask import Flask
 
-# print("С какого языка переводить")
-# from_lang = str(input())
-from_lang = str("en")
-# print("На какой язык переводить")
-# to_lang = str(input())
-to_lang = str("ru")
-# print("Введите текст для перевода")
-# text = str(input())
-text = str("Hello, my friend")
+app = Flask(__name__)
 
-params = {
-    'key': API_KEY,
-    'text': text,
-    'lang': '{}-{}'.format(from_lang, to_lang),
-}
 
-response = requests.get(URL, params=params)
-json_ = response.json()
-output_text = ''.join(json_['text'])
+@app.route('/')
+def hello_world():
+    target = os.environ.get('TARGET', 'Python')
+    return 'Hello, {}!\n'.format(target)
 
-print('\n', output_text)
+
+@app.route('/api/python')
+def greeting():
+    return 'Welcome, Python with Serverless!'
+
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
